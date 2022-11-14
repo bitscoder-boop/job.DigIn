@@ -5,7 +5,7 @@ url = "https://jobaxle.com/search"
 
 def search(
     search_text: str, category_id: str = None, job_location_id: str = None
-) -> requests.Response:
+):
     # return the response object when status code == 200
     payload = "search_text={}&cat_id={}&job_location_id={}"
 
@@ -23,8 +23,7 @@ def search(
         "sec-gpc": "1",
     }
 
-    response = requests.request(
-        "POST",
+    response = requests.post(
         url,
         headers=headers,
         data=payload.format(search_text, category_id, job_location_id),
