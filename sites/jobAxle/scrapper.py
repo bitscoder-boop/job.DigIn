@@ -32,16 +32,11 @@ def search(
         return response
 
 
-def check_job_found(response: requests.Response) -> bool:
+def check_job_found(response_text: requests.Response, message: str) -> bool:
     # return False is the search page have empty jobs
     found = True
-    message = "There are no listings matching your search"
-    if message in response.text:
+    if not message:
+        message = "There are no listings matching your search"
+    if message in response_text:
         found = False
     return found
-
-
-if __name__ == "__main__":
-    a = search("asdadjdjd", "a", "c")
-    # print(a.text)
-    print(check_job_found(a))
