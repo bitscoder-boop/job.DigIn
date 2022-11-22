@@ -1,6 +1,7 @@
 import unittest
-from sites.jobAxle.scrapper import search, check_job_found
+from sites.jobAxle.scrapper import search, check_job_found, get_id_list_of_jobs
 from unittest.mock import patch
+from bs4 import BeautifulSoup
 
 
 class TestSearch(unittest.TestCase):
@@ -18,11 +19,16 @@ class TestFormatResponse(unittest.TestCase):
 
     @patch('sites.jobAxle.scrapper.check_job_found')
     def test_check_job_found_is_false(self, mock_check_job_found):
-        # the return value s False when there are no jobs available
         response_text = "This is the test response message"
-        # message is the keyword to detect, if it detect keyword
-        # than there are no job available
-        message = "there"
+        message = "This"
         mock_check_job_found.return_value = False
         got = check_job_found(response_text, message)
         self.assertEqual(False, got)
+
+    @patch('sites.jobAxle.scrapper.get_id_list_of_jobs')
+    def test_get_id_list_of_jobs(self, mock_object):
+        response_text = open("data/jobAxle/response_text.html")
+        want = ["6515", "6567", "6621", "6627"]
+        mock_object.return_value = want
+        got = get_id_list_of_jobs(response_text)
+        self.assertEqual(got, want)

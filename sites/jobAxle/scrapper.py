@@ -1,4 +1,5 @@
 import requests
+from bs4 import BeautifulSoup
 
 url = "https://jobaxle.com/search"
 
@@ -32,11 +33,22 @@ def search(
         return response
 
 
-def check_job_found(response_text: requests.Response, message: str) -> bool:
-    # return False is the search page have empty jobs
+def check_job_found(response_text: requests.Response.text,
+                    message: str) -> bool:
     found = True
     if not message:
         message = "There are no listings matching your search"
     if message in response_text:
         found = False
     return found
+
+
+def get_id_list_of_jobs(response_text: requests.Response.text) -> list:
+    id_of_jobs = []
+    soup = BeautifulSoup(response_text, 'html.parser')
+    job_block = soup.find('div', {'id': 'srch_output'})
+    job_ids_block = job_block.find_all(
+        'a', {'class': 'show_detail btn_jobview'})
+    for i in job_ids_block:
+        id_of_jobs.append(i.attrs['data-job_id'])
+    return id_of_jobs
