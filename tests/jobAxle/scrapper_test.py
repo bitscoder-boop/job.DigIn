@@ -1,7 +1,7 @@
 import unittest
-from sites.jobAxle.scrapper import search, check_job_found, get_id_list_of_jobs
+from sites.jobAxle.scrapper import search, check_job_found, get_id_list_of_jobs, take_id_give_response_text, get_job_data
 from unittest.mock import patch
-from bs4 import BeautifulSoup
+from data.data_file import JobData
 
 
 class TestSearch(unittest.TestCase):
@@ -32,3 +32,30 @@ class TestFormatResponse(unittest.TestCase):
         mock_object.return_value = want
         got = get_id_list_of_jobs(response_text)
         self.assertEqual(got, want)
+    # // get the data those pages
+
+    @patch('sites.jobAxle.scrapper.requests')
+    def test_take_id_give_response_text(self, mock_requests):
+        response_text = open("data/jobAxle/specific_job.html")
+        mock_requests.get.return_value.status_code = 200
+        mock_requests.get.return_value.text = response_text
+        got = take_id_give_response_text("6515")
+        self.assertEqual(got.status_code, 200)
+        self.assertEqual(got.text, response_text)
+
+    @patch('sites.jobAxle.scrapper.get_job_data')
+    def test_get_job_data(self, mock_objects):
+        response_text = open("data/jobAxle/specific_job.html")
+        print(response_text)
+        data = {"apply_before": "2022-11-25 (1 Days Left)",
+                "company_name": "COTIVITI NEPAL",
+                "job_type": "Full Time",
+                "level": "Mid Level",
+                "location": "Kathmandu",
+                "no_of_vacancy": "3",
+                "offered_salary": "Negotiable"
+                }
+        # want = JobData(**data)
+        mock_objects.return_value = data
+        got = get_job_data(response_text)
+        self.assertEqual(got, data)
