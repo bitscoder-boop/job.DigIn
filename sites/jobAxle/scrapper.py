@@ -88,5 +88,4 @@ def get_job_data(response_text: requests.Response.text) -> JobData:
         # "experience_required": experience
 
     }
-    # return JobData(**data)
-    return data
+    return JobData(**data)

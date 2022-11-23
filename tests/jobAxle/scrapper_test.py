@@ -55,7 +55,7 @@ class TestFormatResponse(unittest.TestCase):
                 "no_of_vacancy": "3",
                 "offered_salary": "Negotiable"
                 }
-        # want = JobData(**data)
-        mock_objects.return_value = data
+        want = JobData(**data)
+        mock_objects.return_value = want
         got = get_job_data(response_text)
         self.assertEqual(got, data)
